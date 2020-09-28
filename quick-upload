@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#takes a localpath 
+localPath=$1
+
+#Settings
+localSitePath="/private/var/www/local.website"
+localFilePath=${localPath#"$localSitePath"}
+remotePath="/remote/server/path/www/website"	
+
+Red='\033[0;31m'
+LightGreen='\033[1;32m'
+Default='\033[0m' 
+
+
+if [ -z $1 ]; then 
+	echo -e "${Red}Error:${Default} You must drag your file path to the terminal as a parameter.${Default}" 
+else	
+	localPath=$1
+  
+	echo $localFilePath
+	printf "${LightGreen} Uploading: ${Default}  $localPath \n"
+	printf "${LightGreen} To Server: ${Default} $remotePath$localFilePath " 
+	#scp $localPath $remotePath$localFilePath
+fi
+
+
