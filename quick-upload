@@ -1,27 +1,53 @@
 #!/bin/bash
 
-#takes a localpath 
-localPath=$1
-
 #Settings
 localSitePath="/private/var/www/local.website"
 localFilePath=${localPath#"$localSitePath"}
 remotePath="/remote/server/path/www/website"	
+filePath=$1
 
+#Colors
 Red='\033[0;31m'
 LightGreen='\033[1;32m'
 Default='\033[0m' 
 
+getRelativePath (){ 
+  filePathLength=${#filePath}
+  localSitePathLength=${#localSitePath}    
+  relativePath=${filePath: $localSitePathLength: filePathLength}
+}
 
-if [ -z $1 ]; then 
-	echo -e "${Red}Error:${Default} You must drag your file path to the terminal as a parameter.${Default}" 
-else	
-	localPath=$1
-  
-	echo $localFilePath
-	printf "${LightGreen} Uploading: ${Default}  $localPath \n"
-	printf "${LightGreen} To Server: ${Default} $remotePath$localFilePath " 
-	#scp $localPath $remotePath$localFilePath
-fi
+getParentDirectory () { 
+  getRelativePath 
+  parentPath=${relativePath%/*}  
+}
 
+unHappyFace () {
+  echo "¯\_(′︿‵｡)_/¯";
+}
 
+upLoadTheFile () {
+  getRelativePath 
+  printf "${LightGreen} Uploading File: ${Default} $filePath \n"
+	printf "${LightGreen} To Server Dir:  ${Default} $remotePath$relativePath  \n" 
+	scp $filePath   $remotePath$relativePath 
+}
+
+upLoadTheDirectory (){
+  getRelativePath
+  getParentDirectory
+  printf "${LightGreen} Uploading Dir: ${Default} $filePath \n"
+	printf "${LightGreen} To Server Dir: ${Default} $remotePath$parentPath  \n" 
+  scp -r $filePath  $remotePath$parentPath  
+}
+
+if [[ -d $filePath ]]; then
+    upLoadTheDirectory
+elif [[ -f $filePath ]]; then 
+    upLoadTheFile  
+else 
+    printf "${LightGreen}File or Directory doesn't exist${Default}"
+    echo " "
+    unHappyFace
+    exit 1
+fi 
