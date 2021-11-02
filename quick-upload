@@ -28,16 +28,16 @@ unHappyFace () {
 
 upLoadTheFile () {
   getRelativePath 
-  printf "${LightGreen} Uploading File: ${Default} $filePath \n"
-	printf "${LightGreen} To Server Dir:  ${Default} $remotePath$relativePath  \n" 
-	scp $filePath   $remotePath$relativePath 
+  printf "${LightGreen} Uploading: ${Default} $filePath \n"
+  printf "${LightGreen} To Server:  ${Default} $remotePath$relativePath  \n" 
+  scp $filePath   $remotePath$relativePath 
 }
 
 upLoadTheDirectory (){
   getRelativePath
   getParentDirectory
   printf "${LightGreen} Uploading Dir: ${Default} $filePath \n"
-	printf "${LightGreen} To Server Dir: ${Default} $remotePath$parentPath  \n" 
+  printf "${LightGreen} To Server Dir: ${Default} $remotePath$parentPath  \n" 
   scp -r $filePath  $remotePath$parentPath  
 }
 
@@ -46,7 +46,7 @@ if [[ -d $filePath ]]; then
 elif [[ -f $filePath ]]; then 
     upLoadTheFile  
 else 
-    printf "${LightGreen}File or Directory doesn't exist${Default}"
+    printf "File or Directory doesn't exist"
     echo " "
     unHappyFace
     exit 1
